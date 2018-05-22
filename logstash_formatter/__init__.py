@@ -45,6 +45,8 @@ class LogstashFormatter(logging.Formatter):
                              by default coerce everything to a string
         """
 
+        self.edit_fields = edit_fields
+
         if fmt is not None:
             self._fmt = json.loads(fmt)
         else:
@@ -175,7 +177,7 @@ class LogstashFormatterV1(LogstashFormatter):
                     '@version': 1,
                     'source_host': self.source_host}
 
-        for old_key, new_key in edit_fields.items():
+        for old_key, new_key in self.edit_fields.items():
             fields[new_key] = fields.pop(old_key)
 
         base_log.update(fields)
