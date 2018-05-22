@@ -32,7 +32,8 @@ class LogstashFormatter(logging.Formatter):
                  datefmt=None,
                  style='%',
                  json_cls=None,
-                 json_default=_default_json_default):
+                 json_default=_default_json_default,
+                 edit_fields={}):
         """
         :param fmt: Config as a JSON string, allowed fields;
                extra: provide extra fields always present in logs
@@ -173,6 +174,10 @@ class LogstashFormatterV1(LogstashFormatter):
                     ".%03d" % (now.microsecond / 1000) + "Z",
                     '@version': 1,
                     'source_host': self.source_host}
+
+        for old_key, new_key in edit_fields.items():
+            fields[new_key] = fields.pop(old_key)
+
         base_log.update(fields)
 
         logr = self.defaults.copy()
